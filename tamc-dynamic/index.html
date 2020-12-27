@@ -1,0 +1,569 @@
+<html>
+
+<head>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <title>Monterey County Collisions</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="leaflet-event-forwarder.js.map"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/03d1c72e53.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans:b">
+    <style>
+        div {
+            font-family: "Open Sans", sans-serif;
+        }
+
+        table {
+            font-size: 12;
+        }
+
+        td {
+            padding: 2px;
+        }
+
+        h {
+            font-size: 30;
+            font-weight: bold;
+        }
+
+        .row {
+            margin: 0;
+        }
+
+        .wrapper-row {
+            height: 100%;
+        }
+
+        .col {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .map-col {
+            height: 100%;
+        }
+
+        #map {
+            /* height: 800px;
+    max-width: 1200px; */
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar-col {
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        #topbox {
+            background-color: #48a23f;
+            color: white;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: 14;
+            color: #598a50;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+
+        .center {
+            font-size: 12;
+        }
+
+        .sev {
+            cursor: pointer;
+            text-align: center;
+            color: white;
+        }
+
+        :link {
+            color: #4a773c;
+        }
+
+        #total {
+            font-size: 16;
+            padding-top: 5px;
+        }
+
+        #footnote {
+            font-size: 10;
+            margin-left: 5em;
+        }
+
+        #credit {
+            font-size: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='container-lg'>
+        <div class="row wrapper-row">
+            <div class="col col-xl-3 col-lg-4 col-md-6 mx-auto center sidebar-col">
+                <div id="topbox">
+                    <br>
+                    <h>
+                        <img src="tamc.png" alt="Transportation Agency for Monterey County"
+                            style="width:100%;max-width:200px;vertical-align:middle">
+                        <br>
+                        Collisions in Monterey County
+                    </h>
+                    <br><br>
+                    <div class='center'>
+                        Data from the Statewide Integrated Traffic Records System (SWITRS),<br>
+                        collected by the California Highway Patrol (CHP). Displayed are all<br>
+                        collisions reported to the CHP between 2013 and 2018 in Monterey County.
+                    </div>
+                    <hr>
+                </div>
+                <div id="slider"></div>
+                <div id="severity-filter">
+                    <div>
+                        <hr>
+                        <div class='heading'>Click the buttons to filter by severity.</div>
+                    </div>
+                    <div>
+                        <table style="margin:auto;">
+                            <tr>
+                                <td>
+                                    <div class='sev' id='sev1'>Fatal injury <span id="sum1"></span></div>
+                                </td>
+                            <tr>
+                                <td>
+                                    <div class='sev' id='sev2'>Severe injury <span id="sum2"></span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class='sev' id='sev3'>Other Visible Injury <span id="sum3"></span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class='sev' id='sev4'>Complaint of Pain <span id="sum4"></span></div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div id="total">
+                            Total: <span id="sumall">Data still loading...</span>
+                        </div>
+                    </div>
+                    <div class='center'>
+                        Collisions involving multiple injuries are categorized by the<br>
+                        most severe injury which occurred in that collision.<br><br>
+                        <input type='checkBox' id='color' checked></input>&nbsp;&nbsp;Color collisions by severity
+                    </div>
+                </div>
+                <div id="collision-type-filter">
+                    <hr>
+                    <div>
+                        <div class='heading'>Check the boxes to filter by collision type.</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="b0" class='type' checked> Bicycle collisions</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="b1" class='type' checked> Pedestrian collisions</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="b2" class='type' checked> Motorcycle collisions</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="b3" class='type' checked> Truck collisions</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="b4" class='type' checked> Alcohol-related collisions</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="b5" class='type' checked> Other collisions</label>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="b6" class='type' checked> Toggle all filters</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="road-filter">
+                    <div>
+                        <hr>
+                        <div class='heading'>Check the boxes to filter by road type.</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="h0" class='type' checked> Non-highways</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="h1" class='type' checked> Highway 1</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="h2" class='type' checked> Highway 25</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="h3" class='type' checked> Highway 68</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="h4" class='type' checked> Highway 101</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="h5" class='type' checked> Highway 156</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="h6" class='type' checked> Highway 183</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="h7" class='type' checked> Highway 198</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="toggleRoads" class='type' checked> Toggle all roads</label>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                </div>
+                <div id="city-filter">
+                    <div>
+                        <hr>
+                        <div class='heading'>Filter by Jurisdiction</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="big-sur" class='type' checked> Big Sur</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="bradley" class='type' checked> Bradley</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='big-sur' class='type' checked>
+                                &nbsp;Big Sur</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='bradley' class='type' checked>
+                                &nbsp;Bradley</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="carmel-valley" class='type' checked> Carmel Valley</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="carmel" class='type' checked> Carmel-by-the-Sea</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='carmel-valley' class='type' checked>
+                                &nbsp;Carmel Valley Village</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='carmel' class='type' checked>
+                                &nbsp;Carmel-by-the-Sea</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="castroville" class='type' checked> Castroville</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="chualar" class='type' checked> Chualar</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='castroville' class='type' checked>
+                                &nbsp;Castroville</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='chualar' class='type' checked>
+                                &nbsp;Chualar</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="del-rey-oaks" class='type' checked> Del Rey Oaks</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="east-garrison" class='type' checked> East Garrison</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='del-rey-oaks' class='type' checked>
+                                &nbsp;Del Rey Oaks</input><br>
+                                </td>
+                            <td>
+                                <input type='checkBox' id='east-garrison' class='type' checked>
+                                &nbsp;East Garrison</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="gonzales" class='type' checked> Gonzales</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="greenfield" class='type' checked> Greenfield</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='gonzales' class='type' checked>
+                                &nbsp;Gonzales</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='greenfield' class='type' checked>
+                                &nbsp;Greenfield</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="jolon" class='type' checked> Jolon</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="king-city" class='type' checked> King City</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='jolon' class='type' checked>
+                                &nbsp;Jolon</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='king-city' class='type' checked>
+                                &nbsp;King City</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="lockwood" class='type' checked> Lockwood</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="marina" class='type' checked> Marina</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='lockwood' class='type' checked>
+                                &nbsp;Lockwood</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='marina' class='type' checked>
+                                &nbsp;Marina</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="monterey" class='type' checked> Monterey</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="moss-landing" class='type' checked> Moss Landing</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='monterey' class='type' checked>
+                                &nbsp;Monterey</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='moss-landing' class='type' checked>
+                                &nbsp;Moss Landing</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="pacific-grove" class='type' checked> Pacific Grove</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="pajaro" class='type' checked> Pajaro</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='pacific-grove' class='type' checked>
+                                &nbsp;Pacific Grove</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='pajaro' class='type' checked>
+                                &nbsp;Pajaro</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="parkfield" class='type' checked> Parkfield</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="pebble-beach" class='type' checked> Pebble Beach</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='parkfield' class='type' checked>
+                                &nbsp;Parkfield</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='pebble-beach' class='type' checked>
+                                &nbsp;Pebble Beach</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <!-- <td>
+                                <label><input type="checkBox" id="prunedale" class='type' checked> Prunedale</label>
+                            </td> -->
+                            <td>
+                                <label><input type="checkBox" id="royal-oaks" class='type' checked> Royal Oaks</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="salinas" class='type' checked> Salinas</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='prunedale' class='type' checked>
+                                &nbsp;Prunedale</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='royal-oaks' class='type' checked>
+                                &nbsp;Royal Oaks</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="san-ardo" class='type' checked> San Ardo</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="san-lucas" class='type' checked> San Lucas</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='salinas' class='type' checked>
+                                &nbsp;Salinas</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='san-ardo' class='type' checked>
+                                &nbsp;San Ardo</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="sand-city" class='type' checked> Sand City</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="seaside" class='type' checked> Seaside</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='san-lucas' class='type' checked>
+                                &nbsp;San Lucas</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='sand-city' class='type' checked>
+                                &nbsp;Sand City</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="soledad" class='type' checked> Soledad</label>
+                            </td>
+                            <td>
+                                <label><input type="checkBox" id="unincorporated" class='type' checked> Other unincorporated</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='seaside' class='type' checked>
+                                &nbsp;Seaside</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='soledad' class='type' checked>
+                                &nbsp;Soledad</input><br>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+                                <label><input type="checkBox" id="toggleCities" class='type' checked> Toggle all cities</label>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td>
+                                <input type='checkBox' id='unincorporated' class='type' checked>
+                                &nbsp;Other unincorporated</input><br>
+                            </td>
+                            <td>
+                                <input type='checkBox' id='toggleCities' class='type' checked>
+                                &nbsp;Toggle all cities</input><br>
+                            </td>
+                        </tr> -->
+                    </table>
+                    <div id="footnote">
+                        <br>
+                    </div>
+                    <br>
+                </div>
+                <div id='downloadlink'>
+                    <hr>
+                    <div>
+                        <a href="collisions_classified.csv" target="_blank">Download the data used in this map</a>
+                    </div>
+                </div>
+                <div id="credit">
+                    <hr>
+                    <i>Made by the Stanford Cartographic Society for the Transportation Agency for Monterey County</i>
+                    <br>
+                    <img src="logoscs.png" alt="Stanford Cartographic Society"
+                        style="width:63px;height:45px;vertical-align:middle">
+                </div>
+                <hr>
+            </div>
+            <div class="col col-xl-9 col-lg-8 col-md-6 mx-auto" id="mapcol">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src='makevis.js'>
+    </script>
+</body>
+
+</html>
