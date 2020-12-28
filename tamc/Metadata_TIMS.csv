@@ -1,0 +1,38 @@
+﻿Raw Field,Descriptive Field,Meaning
+ACCIDENT_YEAR,Accident Year,year collision occurred
+COLLISION_DATE,Collision Date,date when the collision occurred
+COLLISION_TIME,Collision Time,time when collision occurred
+DAY_OF_WEEK,Day of the Week,
+PRIMARY_RD,Primary Rd,road the collision occurred on
+SECONDARY_RD,Secondary Rd,a secondary reference road - direction is measured from
+DIRECTION,Direction,direction of offset distance
+INTERSECTION,Intersection,incidates where a collision occurred at an intersection
+STATE_ROUTE,State Route,
+LOCATION_TYPE,Location Type,"indicates if the collision occurred on a highway, intersection, ramp or blank = not on state highway"
+COLLISION_SEVERITY,Collision Severity,the injury level severity of the collision (1 = fatal)
+NUMBER_KILLED,Number Killed,count of victims in collision that died
+NUMBER_INJURED,Number Injured,count of victims in the collision with injury
+PRIMARY_COLL_FACTOR,Primary Collision Factor,"indicates if the collision was due to a code violation, improper driving, other than driver, unknown, fell asleep or not stated"
+PCF_VIOL_CATEGORY,PCF Violation Category,indicates the category of the primary collision factor - see list in web for explainations
+TYPE_OF_COLLISION,Type of Collision,"indicates how the vehicle(s) collided (head on, sideswipe, rear end, etc.)"
+MVIW,MVIW (motor vehicle involved with),indicates what other object a vehicle collided with
+PED_ACTION,Ped Action,whether or not a pedestrian was involved and how 
+ROAD_COND_1,Road Cond 1,physical condition of the road
+LIGHTING,Lighting,time of day relative to sunlight
+PEDESTRIAN_ACCIDENT,Pedestrian Accident,indicates whether the collision invovled a pedestrian if = Y
+BICYCLE_ACCIDENT,Bicycle Accident,indicates whether the collision involved a bicyclist if = Y
+MOTORCYCLE_ACCIDENT,Motorcycle Accident,indicates whether the collision involved a motorcycle if = Y
+TRUCK_ACCIDENT,Truck Accident,indicates whether the collision involved a big truck if = Y
+ALCOHOL_INVOLVED,Alcohol Involved,indicates whether the collision involved a party that had been drinking
+COUNT_SEVERE_INJ,Count Severe Inury,count of victims in collision with degree of injury of 2
+COUNT_VISIBLE_INJ,Count Visible Injury,count of victims in collision with degree of injury of 3
+COUNT_COMPLAINT_PAIN,Count Complaint of Pain,count of victims in collision with degree of injury of 4
+COUNT_PED_KILLED,Count of Ped Killed,degree of injury is 1
+COUNT_PED_INJURED,Count of Ped Injured,"degree of injury is 2, 3, 4"
+COUNT_BICYCLIST_KILLED,Count Bicyclst Killed,victim degree of injury is 1
+COUNT_BICYCLIST_INJURED,Count Bicyclist Injured,"victim degree of injury is 2, 3, 4"
+COUNT_MC_KILLED,Count Motorcyclist Killed,degree of injury is 1
+COUNT_MC_INJURED,Count Motorcyclist Injured,"degree of injury is 2, 3, 4"
+CITY,City,
+POINT_X,X data,longitude
+POINT_Y,Y data,latitude
