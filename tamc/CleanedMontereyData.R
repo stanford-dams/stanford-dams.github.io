@@ -95,4 +95,4 @@ refined_data <- read_csv("./Collisions.csv") %>%
   )
 
 # Writes out the cleaned data to a new csv file
-write_csv(refined_data, "./collisions_final_cleaned.csv")
+write_csv(refined_data, "./collisions_final_cleaned.csv") 
