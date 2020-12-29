@@ -126,12 +126,28 @@ function addCover(id) {
     addOverlay('body');
     var img = imagerefs[id][whichimg];
     var height = 0.7*(window.innerHeight);
+    var sidewidth = (window.innerWidth - 1.85*height)/2.0;
     var doc = document.documentElement;
     var ypos = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
     var cover = d3.select('body').append('div')
         .attr('class', 'cover')
         .style('left', (0) + 'px')
         .style('top', (ypos+20) + 'px');
+    var return_click_l = cover.append('div')
+        .attr('class', 'returnclick')
+        .style('float', 'left')
+        .style('width', sidewidth)
+        .style('height', window.innerHeight)
+        .style('left', (0) + 'px')
+        .style('top', (ypos+20) + 'px');
+    var return_click_r = cover.append('div')
+        .attr('class', 'returnclick')
+        .style('float', 'right')
+        .style('width', sidewidth)
+        .style('height', window.innerHeight)
+        .style('left', (0) + 'px')
+        .style('top', (ypos+20) + 'px');
+    d3.selectAll('.returnclick').on('click', function () { removeCover(); });
     var img_caption = cover.append('div')
         .attr('class', 'imgcaption')
         .style('width', 1.7778*height)

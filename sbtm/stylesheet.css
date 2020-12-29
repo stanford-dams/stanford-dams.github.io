@@ -105,6 +105,19 @@ a {
   z-index: 100;
 }
 
+.returnclick {
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 200;
+  /*display:inline-block;*/
+}
+
+.sidepanel {
+  position: absolute;
+  z-index: 400;
+  background-color: green;
+}
+
 .overlay {
   opacity: 0.8;
   background-color: #ccc;
