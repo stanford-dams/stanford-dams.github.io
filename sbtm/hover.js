@@ -167,6 +167,14 @@ function addCover(id) {
             .style('width', 1.7778*height)
             .html(sources[id][whichimg]);
     }
+    var return_click_l = cover.append('div')
+        .attr('class', 'returnclick_bot')
+        .style('width', window.innerWidth)
+        .style('height', 200).on('click', function () {
+            whichimg = 0;
+            removeCover(); 
+            coveron = false;
+        });
     d3.selectAll('.slideimg').on('click', function () { addCover(id); });
     whichimg += 1;
     if (whichimg >= numimgs[id]) whichimg = 0;
