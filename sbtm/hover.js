@@ -152,10 +152,11 @@ function addCover(id) {
         removeCover(); 
         coveron = false;
     });
+    var seq_string = (whichimg+1).toString() + '/' + numimgs[id].toString();
     var img_caption = cover.append('div')
         .attr('class', 'imgcaption')
         .style('width', 1.7778*height)
-        .html((whichimg+1).toString() + '/' + numimgs[id].toString() + '<br>' + captions[id][whichimg]);
+        .html(seq_string + '<br>' + captions[id][whichimg]);
     var img_elem = cover.append('img')
         .attr('class', 'slideimg')
         .attr('height', height)
@@ -167,14 +168,32 @@ function addCover(id) {
             .style('width', 1.7778*height)
             .html(sources[id][whichimg]);
     }
-    var return_click_l = cover.append('div')
+    var return_click_b = cover.append('div')
         .attr('class', 'returnclick_bot')
         .style('width', window.innerWidth)
-        .style('height', 200).on('click', function () {
+        .style('height', 200)
+        .on('click', function () {
             whichimg = 0;
             removeCover(); 
             coveron = false;
         });
+    if (numimgs[id] > 1) {
+        img_elem.on('mouseover', function () {
+            var img_elem_container = img_elem._groups[0][0];
+            var top_pos = img_elem_container.offsetHeight + img_elem_container.offsetTop;
+            var clicktoflip = cover.append('div')
+                .attr('class', 'clicktoflip c2f')
+                .style('width', 120)
+                .style('height', 30)
+            top_pos = top_pos - clicktoflip._groups[0][0].offsetTop - 30;
+            clicktoflip.style('margin-top', top_pos).style('margin-left', (1.7778*height)-75);
+            clicktoflip.append('text')
+                .attr('class', 'c2ftext c2f')
+                //.attr('text-anchor', 'end')
+                .text('Click to flip (' + seq_string + ')');
+        });
+        img_elem.on('mouseout', function () { d3.selectAll('.c2f').remove(); });
+    }
     d3.selectAll('.slideimg').on('click', function () { addCover(id); });
     whichimg += 1;
     if (whichimg >= numimgs[id]) whichimg = 0;

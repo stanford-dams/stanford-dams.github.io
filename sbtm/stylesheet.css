@@ -74,6 +74,14 @@ a {
   margin-top: 0px;
 }
 
+.clicktoflip {
+  /*display: inline-block;*/
+}
+
+.c2ftext {
+  font-family: ibm;
+}
+
 .tooltip {
   position: absolute;
   text-align: left;
