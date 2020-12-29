@@ -147,7 +147,11 @@ function addCover(id) {
         .style('height', window.innerHeight)
         .style('left', (0) + 'px')
         .style('top', (ypos+20) + 'px');
-    d3.selectAll('.returnclick').on('click', function () { removeCover(); });
+    d3.selectAll('.returnclick').on('click', function () {
+        whichimg = 0;
+        removeCover(); 
+        coveron = false;
+    });
     var img_caption = cover.append('div')
         .attr('class', 'imgcaption')
         .style('width', 1.7778*height)
