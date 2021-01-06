@@ -16,6 +16,7 @@ if (caller === '1' || caller === '2') {
     var captions = {};
     d3.tsv('./images.tsv', function (d) {
         if (d['chapter'] === caller) {
+                console.log(d);
             var list = d['images'].split(',');
             for (var i = 0; i < list.length; i++) list[i] = '0' + caller + '-' + list[i];
             imagerefs[d['ref']] = list;
