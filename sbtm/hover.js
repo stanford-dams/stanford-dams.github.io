@@ -127,6 +127,7 @@ function addCover(id) {
     addOverlay('body');
     var img = imagerefs[id][whichimg];
     var height = 0.7*(window.innerHeight);
+    var calcwidth = 1.7778*height;
     var sidewidth = (window.innerWidth - 1.85*height)/2.0;
     var doc = document.documentElement;
     var ypos = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
@@ -156,7 +157,7 @@ function addCover(id) {
     var seq_string = (whichimg+1).toString() + '/' + numimgs[id].toString();
     var img_caption = cover.append('div')
         .attr('class', 'imgcaption')
-        .style('width', 1.7778*height)
+        .style('width', calcwidth)
         .html(seq_string + '<br>' + captions[id][whichimg]);
     var img_elem = cover.append('img')
         .attr('class', 'slideimg')
@@ -166,7 +167,7 @@ function addCover(id) {
     if (img_src != '0') {
         cover.append('div')
             .attr('class', 'imgsrc')
-            .style('width', 1.7778*height)
+            .style('width', calcwidth)
             .html(sources[id][whichimg]);
     }
     var return_click_b = cover.append('div')
@@ -184,13 +185,12 @@ function addCover(id) {
             var top_pos = img_elem_container.offsetHeight + img_elem_container.offsetTop;
             var clicktoflip = cover.append('div')
                 .attr('class', 'clicktoflip c2f')
-                .style('width', 120)
+                .style('width', 150)
                 .style('height', 30)
             top_pos = top_pos - clicktoflip._groups[0][0].offsetTop - 30;
-            clicktoflip.style('margin-top', top_pos).style('margin-left', (1.7778*height)-75);
+            clicktoflip.style('margin-top', top_pos).style('margin-left', calcwidth+(window.innerHeight*0.1));
             clicktoflip.append('text')
                 .attr('class', 'c2ftext c2f')
-                //.attr('text-anchor', 'end')
                 .text('Click to flip (' + seq_string + ')');
         });
         img_elem.on('mouseout', function () { d3.selectAll('.c2f').remove(); });

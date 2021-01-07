@@ -76,10 +76,15 @@ a {
 
 .clicktoflip {
   /*display: inline-block;*/
+  text-align: right;
 }
 
 .c2ftext {
-  font-family: ibm;
+  font-family: ibm-bold;
+  font-size: 18;
+  text-align: right;
+  background-color: white;
+  padding: 3px;
 }
 
 .tooltip {
