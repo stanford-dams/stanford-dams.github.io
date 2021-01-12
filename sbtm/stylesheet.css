@@ -204,8 +204,7 @@ a {
   display: inline-block;
 }
 .readin {
-  font-family: ibm,helvetica,arial,sans;
-  font-weight: 500;
+  font-family: ibm-bold,helvetica,arial,sans;
   font-size: 19px;
   line-height: 23px;
   text-align: center;
