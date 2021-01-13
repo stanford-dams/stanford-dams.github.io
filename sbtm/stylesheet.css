@@ -55,6 +55,11 @@ a {
   line-height: 25px;
 }
 
+#aboutpage {
+  font-size: 14px;
+}
+
+
 .section_line {
   display: table;
   margin: 0 auto;
