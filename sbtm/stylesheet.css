@@ -11,6 +11,10 @@ a {
   text-decoration: none;
 }
 
+#titleimg {
+  width: 50%;
+}
+
 .reflink {
   text-decoration: underline;
   text-decoration-color: #cfcfcf;
