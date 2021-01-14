@@ -15,6 +15,14 @@ a {
   width: 50%;
 }
 
+#headerimg {
+  width: 40%;
+}
+
+.centered {
+  text-align: center;
+}
+
 .reflink {
   text-decoration: underline;
   text-decoration-color: #cfcfcf;
